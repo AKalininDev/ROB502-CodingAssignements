@@ -1,5 +1,8 @@
 # FA24_ROB502
 
+## Welcome to ROB 502!
+Below are some common commands used for the homeworks.
+
 ## Setup
 Fork
 - Click fork on the top right
@@ -34,3 +37,4 @@ git fetch upstream main
 ```
 git pull upstream main
 ```
+
