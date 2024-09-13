@@ -21,7 +21,7 @@ sudo apt update
 sudo apt install git
 git clone <paste HTTPS link>
 cd your_repo_name
-git remote add upstream https://gitlab.eecs.umich.edu/thiruchl/fa23_rob502.git
+git remote add upstream https://gitlab.eecs.umich.edu/jessisc/fa24_rob502.git
 ```
 
 ## How to fetch new homeworks

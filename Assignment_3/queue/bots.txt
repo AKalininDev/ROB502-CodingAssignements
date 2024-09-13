@@ -1,4 +1,0 @@
-CameraBot Inspector
-SkyBot Crane
-DirtBot Dozer
-CarBot Transporter
