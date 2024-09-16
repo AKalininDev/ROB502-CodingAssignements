@@ -32,9 +32,14 @@ git fetch upstream main
 ```
 
 ## How to pull new homeworks
-- Pull from upstream
+- Pull from upstream 
 
 ```
 git pull upstream main
-```
 
+
+## How to push your homeworks
+```- Push to origin
+
+```
+git push origin main
