@@ -44,4 +44,6 @@ git pull upstream main
 - Push to origin
 
 ```
+git add .
+git commit -m "descriptive message"
 git push origin main
