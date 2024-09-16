@@ -38,8 +38,10 @@ git fetch upstream main
 git pull upstream main
 
 
+```
+
 ## How to push your homeworks
-```- Push to origin
+- Push to origin
 
 ```
 git push origin main
