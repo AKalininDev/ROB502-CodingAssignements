@@ -13,9 +13,9 @@ std::string repeatString(const std::string &str, const int &times)
     return result;
 }
 
-long int multiply(const long int &a, const long int &b)
+long double multiply(const long int &a, const long int &b)
 {
-    return a * b;
+    return static_cast<long double>(a) * static_cast<long double>(b);
 }
 
 // include the standard library files that defines the std:: functions
@@ -39,11 +39,11 @@ int main()
     // there are many numerical types, each with different signedness and size
     // declare the appropriate types for them such that none of them overflow
     // note that 2^32 ~= 4 billion
-    long int large_number = 1000000;
+    long long int large_number = 1000000;
     large_number *= 3;
     std::cout << large_number << std::endl;
 
-    long int even_larger_number = large_number * large_number;
+    long long int even_larger_number = large_number * large_number;
     std::cout << even_larger_number << std::endl;
 
     // implement this multiply function
