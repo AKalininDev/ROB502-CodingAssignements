@@ -195,21 +195,20 @@ int main()
     std::cout << std::fixed << std::setprecision(1);
 
     // should print 1.5 + 0.2x + 5.5x^3
-    std::cout << p1 << std::endl;
+    // std::cout << p1 << std::endl;
 
     // create p2(x) = -0.1 + -1.4x^2
     UnivariatePolynomial p2{std::vector<Coefficient>{-0.1, 0, -1.4}};
 
     // should print -0.1 + -1.4x^2
-    std::cout << p2 << std::endl;
+    // std::cout << p2 << std::endl;
 
     // should print 0.2 + 16.5x^2
-    std::cout << p1.derivative() << std::endl;
+    // std::cout << p1.derivative() << std::endl;
 
     // should print 1.2 + 0.2x + -4.2x^2 + 5.5x^3
-    std::cout << p1 + p2 * 3 << std::endl;
+    // std::cout << p1 + p2 * 3 << std::endl;
 
-    // input/oputput file tests
     std::ifstream input{"input.txt"};
     std::ofstream output{"output.txt"};
 
@@ -222,14 +221,10 @@ int main()
     {
         UnivariatePolynomial p;
         input >> p;
-
         output << p << std::endl;
         output << p.derivative() << std::endl;
         p_total = p_total + p;
     }
-
     output << p_total << std::endl;
     output << p_total.derivative() << std::endl;
-
-    return 0;
 }
