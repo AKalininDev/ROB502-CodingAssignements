@@ -1,58 +1,122 @@
 #include <iostream>
 #include <fstream>
-// below are some includes that are hints for what could make things easier
+
 #include <string>
 #include <vector>
 #include <algorithm>
 
-void processLine(std::string& line, int lineNumber, int* counter) {
-    // line is passed in by reference, so you can modify it directly
-    // do not return anything from this function
-    // --- Your code here
-
-
-
-    // ---
-}
-
-int* createCounter() {
-    // this is a contrived function to get you more familiar with heap allocation
-    // if you return a pointer to a local variable (on the stack), that value will be invalid after the return
-    // and accessing it will be unexpected behavior (probably a segfault)
-    // remember to initialize it to 0
-    // --- Your code here
-
-
-
-    // ---
-}
-
-int main() {
-
-    // you will need to read the API of std::ofstream and std::ifstream
-    std::ifstream input{"input.txt"};
-    std::vector<std::string> lines;
+std::vector<std::string> parseFileLines(std::ifstream &input)
+{
     std::string line;
+    std::vector<std::string> lines;
 
-    // create a reference to the pointed value
-    // references can be used more conveniently than pointers
-    // note that the processLine function takes counter as a pointer, so you have to address it with &
-    // contrived example to get you more familiar with going between references and pointers
-    // usually there will not be so many unnecessary conversions
-    int& counter = *createCounter();
+    if (!input.is_open())
+    {
+        throw std::runtime_error("Error opening file");
+    }
 
-    // --- Your code here
+    while (std::getline(input, line))
+    {
+        lines.push_back(line);
+    }
 
+    return lines;
+}
 
+void char1ToChar2(std::string &originalString, const char character1, const char character2, std::vector<int> &modifiedCharIndices)
+{
+    for (int i = 0; i < originalString.size(); i++)
+    {
+        if (originalString[i] == character1)
+        {
+            originalString[i] = character2;
+            modifiedCharIndices.push_back(i);
+        }
+    }
+}
 
-    // ---
+std::vector<std::string> reversed(const std::vector<std::string> &lines)
+{
+    std::vector<std::string> reversedLines;
 
-    // output
-    // --- Your code here
+    for (int i = lines.size() - 1; i >= 0; i--)
+    {
+        reversedLines.push_back(lines[i]);
+    }
 
+    return reversedLines;
+}
 
+std::vector<int> processLine(std::string &line)
+{
+    std::vector<int> modifiedCharIndices;
 
-    // ---
+    char1ToChar2(line, 'e', '3', modifiedCharIndices);
+    char1ToChar2(line, 'l', '1', modifiedCharIndices);
+    char1ToChar2(line, 't', '7', modifiedCharIndices);
+
+    return modifiedCharIndices;
+}
+
+void counterCompute(const std::string &line, const int lineNumber, const std::vector<int> modifiedCharIndeces, int *counter)
+{
+    for (const int &index : modifiedCharIndeces)
+    {
+        int number = (line[index] - '0') * lineNumber;
+        *counter += number;
+    }
+}
+
+std::vector<std::string> processedLines(const std::vector<std::string> &originaLines, int *counter)
+{
+    std::vector<std::string> processedLines = originaLines;
+
+    for (int i = 0; i < processedLines.size(); i++)
+    {
+        std::vector<int> modifiedCharIndices = processLine(processedLines[i]);
+        counterCompute(processedLines[i], i, modifiedCharIndices, counter);
+
+        modifiedCharIndices.clear();
+    }
+
+    processedLines = reversed(processedLines);
+
+    return processedLines;
+}
+
+int *createCounter()
+{
+
+    int *counter = new int(0);
+
+    return counter;
+}
+
+void outputToFile(const std::vector<std::string> &lines, const int &counter, std::ofstream &output)
+{
+
+    for (const std::string &line : lines)
+    {
+        output << line << '\n';
+    }
+
+    output << counter << std::endl;
+}
+
+int main()
+{
+
+    // get the original lines
+    std::ifstream input{"input.txt"};
+    std::vector<std::string> originalLines = parseFileLines(input);
+
+    // process the lines and compute the counter
+    int &counter = *createCounter();
+    std::vector<std::string> processed = processedLines(originalLines, &counter);
+
+    // output to file
+    std::ofstream output{"output.txt"};
+    outputToFile(processed, counter, output);
 
     delete &counter;
 }
