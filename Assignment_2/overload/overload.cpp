@@ -47,7 +47,7 @@ namespace rob
     // It is the same as the length of the second string
     std::string sub(std::string a, std::string b)
     {
-        return a.substr(0, b.size());
+        return a.substr(0, a.size() - b.size());
     }
 
     // MULTIPLICATIONS
