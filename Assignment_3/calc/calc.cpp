@@ -30,9 +30,9 @@ bool containsOperator(const std::string &s)
   return s.find_first_of("+*/") != std::string::npos;
 }
 
-bool isValidOperator(const std::string &s)
+bool isValidOperator(const char &s)
 {
-  return s.back() == '+' || s.back() == '*' || s.back() == '/';
+  return s == '+' || s == '*' || s == '/';
 }
 
 bool isOperationPossible(const std::vector<double> &numbers, const char operation)
@@ -52,7 +52,7 @@ bool isOperationPossible(const std::vector<double> &numbers, const char operatio
   return false;
 }
 
-void performOperation(std::vector<double> &numbers, const char &operation, std::string &result)
+void performOperation(std::vector<double> &numbers, const char &operation, double &result)
 {
   if (operation == '+')
   {
@@ -62,7 +62,7 @@ void performOperation(std::vector<double> &numbers, const char &operation, std::
       sum += number;
     }
 
-    result = std::to_string(sum);
+    result = sum;
   }
   else if (operation == '*')
   {
@@ -70,7 +70,7 @@ void performOperation(std::vector<double> &numbers, const char &operation, std::
 
     if (numbers.size() == 0)
     {
-      result = "0";
+      result = 0.0;
       return;
     }
 
@@ -79,92 +79,83 @@ void performOperation(std::vector<double> &numbers, const char &operation, std::
       product *= number;
     }
 
-    result = std::to_string(product);
+    result = product;
   }
   else if (operation == '/')
   {
-    result = std::to_string(numbers[0] / numbers[1]);
+    result = numbers[0] / numbers[1];
   }
 }
 
-std::string formatResult(const std::string &result)
+void parse_line(std::string line, double &result, bool &error)
 {
-  std::string formattedResult = result;
-  if (result.find('.') != std::string::npos)
-  {
-    while (formattedResult.back() == '0')
-    {
-      formattedResult.pop_back();
-    }
-    if (formattedResult.back() == '.')
-    {
-      formattedResult.pop_back();
-    }
-  }
-  return formattedResult;
-}
-
-void parse_line(std::string line, std::string &result)
-{
-  line.erase(0, line.find_first_not_of(" \t\n\r"));
-  line.erase(line.find_last_not_of(" \t\n\r") + 1);
-  std::vector<double> numbers;
 
   std::istringstream lineStream(line);
-  std::string token;
+  std::vector<double> numbers;
+  double token;
 
-  result = "ERROR";
+  error = true;
   bool operatorFound = false;
 
   while (lineStream >> token)
   {
 
-    if (isDouble(token))
+    numbers.push_back(token);
+  }
+
+  if (numbers.empty())
+  {
+    return;
+  }
+
+  lineStream.clear();
+
+  char op = '\0';
+  if (!line.empty())
+  {
+    for (int i = line.size() - 1; i >= 0; --i)
     {
-      numbers.push_back(std::stod(token));
-    }
-
-    if (containsOperator(token))
-    {
-
-      if (!isValidOperator(token))
+      if (!isspace(line[i]))
       {
-        return;
+        op = line[i];
+        break;
       }
-
-      const char op = token.back();
-
-      if (!isOperationPossible(numbers, op))
-      {
-        return;
-      }
-
-      performOperation(numbers, op, result);
-      result = formatResult(result);
-
-      // After operation, ensure no remaining tokens
-      // if (lineStream >> token)
-      // {
-      //   result = "ERROR";
-      // }
-      operatorFound = true;
-      return;
     }
   }
+
+  if (!isValidOperator(op))
+  {
+    return;
+  }
+
+  if (!isOperationPossible(numbers, op))
+  {
+    return;
+  }
+
+  performOperation(numbers, op, result);
+  error = false;
+
+  return;
 }
 
 void process_f_stream(std::ifstream &infile, std::ofstream &outfile)
 {
   std::string line;
   std::vector<double> numbers;
-  std::string result;
-  while (!infile.eof())
-  {
-    std::getline(infile, line);
+  double result;
+  bool error = true;
 
-    if (!line.empty())
+  while (std::getline(infile, line))
+  {
+    parse_line(line, result, error);
+
+    if (error)
     {
-      parse_line(line, result);
+      outfile << "ERROR" << std::endl;
+    }
+    else
+    {
       outfile << result << std::endl;
     }
   }
