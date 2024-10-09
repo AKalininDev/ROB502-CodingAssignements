@@ -92,7 +92,7 @@ int main()
     {
         if (policy.find(currentState) == policy.end())
         {
-            cout << "State " << currentState.at(0) << " " << currentState.at(1) << " is not in policy, terminating." << endl;
+            cerr << "State " << currentState.at(0) << " " << currentState.at(1) << " is not in policy, terminating." << endl;
             outputfile.close();
             return 1;
         }
