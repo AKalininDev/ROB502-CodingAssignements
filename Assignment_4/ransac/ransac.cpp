@@ -7,20 +7,21 @@
 
 #include "ransac.h"
 
-int main(int argc, char* argv[])
+int main(int argc, char *argv[])
 {
     // by defult, use the file pointcloud.txt, but if you supply a command line argument, use that instead
     std::string input_filename{"pointcloud1.txt"};
-    if (argc >= 2) {
+    if (argc >= 2)
+    {
         input_filename = argv[1];
     }
     std::ifstream ifs(input_filename);
 
-    if (!ifs.good()) {
+    if (!ifs.good())
+    {
         std::cerr << "Failed to open file " << input_filename << std::endl;
         return 0;
     }
-
 
     int num_points;
     ifs >> num_points;
