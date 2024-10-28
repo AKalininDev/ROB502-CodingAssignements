@@ -8,10 +8,10 @@ import numpy as np
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--infile", type=str, default="pointcloud1.txt")
-    parser.add_argument("-a", type=float, default=-0.662)
-    parser.add_argument("-b", type=float, default=0.697)
-    parser.add_argument("-c", type=float, default=0.276)
-    parser.add_argument("-d", type=float, default=0.674)
+    parser.add_argument("-a", type=float, default=-0.664)
+    parser.add_argument("-b", type=float, default=0.689)
+    parser.add_argument("-c", type=float, default=0.288)
+    parser.add_argument("-d", type=float, default=0.695)
 
     args = parser.parse_args()
 

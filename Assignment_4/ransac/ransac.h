@@ -192,15 +192,15 @@ FitResult LeastSquaresFitter::fit(Eigen::MatrixXd const &points)
     Eigen::MatrixXd A(n_sample_points_, 3);
     Eigen::VectorXd b = Eigen::VectorXd::Zero(n_sample_points_);
 
-    // refactoring problem to solve z = a * x + b * y  + d. Minimizing the vertical error
+    // refactoring problem to solve d = -a*x - b*y + c*z. Minimizing the perpendicular distance to plane
 
     for (int i = 0; i < n_sample_points_; i++)
     {
         A(i, 0) = -random_points(i, 0);
         A(i, 1) = -random_points(i, 1);
-        A(i, 2) = -1;
+        A(i, 2) = -random_points(i, 2);
 
-        b(i) = random_points(i, 2);
+        b(i) = 1;
     }
 
     Eigen::Vector3d x = (A.transpose() * A).inverse() * A.transpose() * b;
@@ -208,8 +208,8 @@ FitResult LeastSquaresFitter::fit(Eigen::MatrixXd const &points)
     Plane least_squares_plane;
     least_squares_plane.a = x(0);
     least_squares_plane.b = x(1);
-    least_squares_plane.c = 1;
-    least_squares_plane.d = x(2);
+    least_squares_plane.c = x(2);
+    least_squares_plane.d = 1;
 
     // Normalizing the plane equation
     double norm = std::sqrt(least_squares_plane.a * least_squares_plane.a + least_squares_plane.b * least_squares_plane.b + least_squares_plane.c * least_squares_plane.c);
