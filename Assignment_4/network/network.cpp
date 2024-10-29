@@ -58,11 +58,7 @@ public:
 
     Eigen::MatrixXd forward(Eigen::MatrixXd const &x) const override
     {
-        // --- Your code here
-
-
-
-        // ---
+        return A * x + b;
     };
 
 private:
@@ -70,23 +66,37 @@ private:
     Eigen::MatrixXd b;
 };
 
-// Create and implement the ReLU and Softmax classes here
-// --- Your code here
+class ReLU : public Layer
+{
+public:
+    Eigen::MatrixXd forward(Eigen::MatrixXd const &x) const
+    {
+        return x.cwiseMax(0);
+    }
+};
 
+class Softmax : public Layer
+{
+public:
+    Eigen::MatrixXd forward(Eigen::MatrixXd const &x) const
+    {
+        Eigen::MatrixXd exp_x = x.array().exp();
+        return exp_x / exp_x.sum();
+    }
+};
 
-
-// ---
-
-int main(int argc, char* argv[])
+int main(int argc, char *argv[])
 {
     const Eigen::IOFormat vec_csv_format(3, Eigen::DontAlignCols, ", ", ", ");
     std::ofstream ofs("output.csv");
 
     // load in the weights, biases, and the data from files
     std::vector<std::string> data_filenames{"data1.csv", "data2.csv", "data3.csv", "data4.csv"};
-    if (argc >= 2) {
+    if (argc >= 2)
+    {
         data_filenames.clear();
-        for (int i{1}; i < argc; ++i) {
+        for (int i{1}; i < argc; ++i)
+        {
             data_filenames.push_back(argv[i]);
         }
     }
@@ -102,12 +112,12 @@ int main(int argc, char* argv[])
         std::ifstream ifs{data_filename};
         Eigen::MatrixXd X = csv2mat(ifs);
 
-        // now call your layers
-        // --- Your code here
+        // Calling Layers in sequence
+        Eigen::MatrixXd x1 = l1.forward(X);
+        Eigen::MatrixXd x2 = r.forward(x1);
+        Eigen::MatrixXd x3 = l2.forward(x2);
+        Eigen::MatrixXd probabilities = s.forward(x3);
 
-
-
-        // ---
         ofs << probabilities.format(vec_csv_format) << std::endl;
     }
 }
