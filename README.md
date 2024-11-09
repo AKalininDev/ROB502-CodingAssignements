@@ -40,6 +40,12 @@ git pull upstream main
 
 ```
 
+# Works on Personal Machine
+git fetch upstream main
+
+git merge upstream/main -X ours -m "Merging Assignement{assignemnt number} from upstream"
+
+
 ## How to push your homeworks
 - Push to origin
 
@@ -47,3 +53,4 @@ git pull upstream main
 git add .
 git commit -m "descriptive message"
 git push origin main
+
