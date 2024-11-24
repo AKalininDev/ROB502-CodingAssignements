@@ -4,12 +4,9 @@
 #include <fstream>
 #include <iostream>
 #include <map>
-// add the include for climber.h
-// --- Your code here
+#include "climber.h"
 
-
-
-// ---
+int CLIMB_LIMIT = 2;
 
 bool operator==(Coordinate const &c1, Coordinate const &c2)
 {
@@ -33,7 +30,8 @@ Coordinate operator+(Coordinate const &c1, Coordinate const &c2)
 void read_input(std::map<Coordinate, int> &m, Coordinate &start, std::string const &infilename)
 {
     std::ifstream infile(infilename);
-    if (!infile.good()) {
+    if (!infile.good())
+    {
         std::cerr << "No such file " << infilename << '\n';
         throw std::runtime_error("No such file!");
     }
@@ -59,43 +57,117 @@ void read_input(std::map<Coordinate, int> &m, Coordinate &start, std::string con
     }
 }
 
-void climber_algorithm(std::map<Coordinate, int> const &m, Coordinate const &start, std::string const& outfilename)
+Coordinate findMaxCoordinate(const std::map<Coordinate, int> &m)
+{
+    Coordinate maxCoordinate = {0, 0};
+
+    for (auto const &entry : m)
+    {
+        if (entry.first.x > maxCoordinate.x)
+        {
+            maxCoordinate.x = entry.first.x;
+        }
+
+        if (entry.first.y > maxCoordinate.y)
+        {
+            maxCoordinate.y = entry.first.y;
+        }
+    }
+
+    return maxCoordinate;
+}
+
+std::vector<Coordinate> generateOrderedNeighbours(Coordinate const &current_xy)
+{
+    std::vector<Coordinate> neighbours = {
+        {current_xy.x + 1, current_xy.y},
+        {current_xy.x - 1, current_xy.y},
+        {current_xy.x, current_xy.y + 1},
+        {current_xy.x, current_xy.y - 1}};
+
+    return neighbours;
+};
+
+bool validNeighbour(Coordinate const &neighbour, const std::map<Coordinate, int> &m, const int currentHeight)
+{
+    Coordinate maxMapCoordinate = findMaxCoordinate(m);
+
+    // check if neighbour is in bounds
+    if ((neighbour.x < 0) || (neighbour.y < 0))
+    {
+        return false;
+    }
+
+    if ((neighbour.x > maxMapCoordinate.x) || (neighbour.y > maxMapCoordinate.y))
+    {
+        return false;
+    }
+
+    // check if neighbour is climbable
+    if (m.at(neighbour) > CLIMB_LIMIT + currentHeight)
+    {
+        return false;
+    }
+
+    return true;
+};
+
+void climber_algorithm(std::map<Coordinate, int> const &m, Coordinate const &start, std::string const &outfilename)
 {
     std::ofstream outfile(outfilename);
+    if (!outfile.is_open())
+    {
+        std::cerr << "Failed to open output file: " << outfilename << std::endl;
+        return;
+    }
 
-    // These print statements are for your debugging convenience. The autograder will only look at the output file.
+    // Debugging outputs
     std::cout << "height at start: " << m.at(start) << std::endl;
 
     Coordinate current_xy = start;
     int current_height = m.at(start);
 
-    // 'offsets' should contain the changes in XY coordinates, in the order specified in the assigmnet doc.
-    // Note that the Coordinate struct has operator+ defined on it, which lets you add two Coordiantes together
-    std::vector<Coordinate> offsets{
-        // --- Your code here
+    std::vector<Coordinate> offsets{};
 
-
-
-        // ---
-    };
-
-    // We use a while true here, then break when we detect the climber has reached a local maximum
-    while (true)
+    bool localClimbableMax = false;
+    while (!localClimbableMax)
     {
         outfile << current_xy.x << " " << current_xy.y << " " << current_height << std::endl;
-        // Consider creating variables to keep track of the next coordinate and the height at the next coordinate.
-        // You should iterate over the valid neighbors and update these variables each time we find a new-best neighbor.
-        // A valid neighor is one that is in-bounds, has height > the current height but <= the current height + 2.
-        // If the current xy is the same as the next xy that means we've hit our local maxiumum and we should stop.
-        
-        // --- Your code here
 
+        std::vector<Coordinate> neighbours = generateOrderedNeighbours(current_xy);
 
+        int stepHeight = 0;
+        Coordinate next_xy = current_xy;
+        int neighbourHeight = current_height;
 
-        // ---
+        for (const auto neighbour : neighbours)
+        {
+            if (!validNeighbour(neighbour, m, current_height))
+            {
+                continue;
+            }
+
+            int newNeighbourHeight = m.at(neighbour);
+
+            if (newNeighbourHeight > neighbourHeight)
+            {
+                next_xy = neighbour;
+                neighbourHeight = newNeighbourHeight;
+            }
+        }
+
+        if (next_xy == current_xy)
+        {
+            localClimbableMax = true; // no better climbable neighbour found
+        }
+
+        current_xy = next_xy;
+        current_height = neighbourHeight;
+
+        // Debugging outputs
+        std::cout << "location at end: " << current_xy.x << " " << current_xy.y << std::endl;
+        std::cout << "height at end: " << current_height << std::endl;
     }
-
-
-    std::cout << "location at end: " << current_xy.x << " " << current_xy.y << std::endl;
-    std::cout << "height at end: " << current_height << std::endl;
+    outfile.flush();
+    outfile.close();
 }
