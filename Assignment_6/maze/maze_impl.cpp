@@ -1,6 +1,7 @@
 #include "maze.h"
 #include "bfs.h"
 #include "dfs.h"
+#include <sstream>
 
 State::State() {}
 State::State(int x, int y) : x(x), y(y) {}

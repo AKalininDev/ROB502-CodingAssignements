@@ -9,7 +9,8 @@
 #include <vector>
 
 /** \brief State representing a 2D cell with indexes x, y */
-struct State {
+struct State
+{
     int x;
     int y;
 
@@ -22,8 +23,9 @@ struct State {
 using StatePtr = std::shared_ptr<State>;
 
 /** \brief Node representing a state in a path */
-class Node {
-   public:
+class Node
+{
+public:
     Node();
     virtual ~Node();
 
@@ -46,11 +48,12 @@ using NodePtr = std::shared_ptr<Node>;
 
 /** \brief Define operator == between State objects.
  * This is necessary to check is two states correspond to the same location */
-bool operator==(const State& s1, const State& s2);
+bool operator==(const State &s1, const State &s2);
 
 /** \brief Definition of a planning problem */
-class ProblemDefinition {
-   private:
+class ProblemDefinition
+{
+private:
     /** \brief Matrix representing a 2D maze
      *  Column index represent x axis from left to right
      *  Row index represents y axis from bottom to top */
@@ -65,7 +68,7 @@ class ProblemDefinition {
     /** \brief The goal state */
     State goal_;
 
-   public:
+public:
     /** \brief Constructor */
     ProblemDefinition();
 
@@ -77,7 +80,7 @@ class ProblemDefinition {
     State startState() const;
 
     /** \brief Check if a state satisfies the goal */
-    bool isGoal(const State& state) const;
+    bool isGoal(const State &state) const;
 
     /** \brief If true, allows for diagonal moves between cells */
     bool allow_diagonal_{false};
@@ -91,26 +94,27 @@ class ProblemDefinition {
      *  If a path is given, it is printed as '*'
      * Default: empty path
      */
-    void printMaze(const std::vector<State>& path = std::vector<State>()) const;
+    void printMaze(const std::vector<State> &path = std::vector<State>()) const;
 
     /** \brief Return the valid next states from a given state */
-    std::vector<State> validStates(const State& state) const;
+    std::vector<State> validStates(const State &state) const;
 
     /** \brief check that a state is valid (within the maze and not in
      * collision) */
-    bool isStateValid(const State& state) const;
+    bool isStateValid(const State &state) const;
 };
 using ProblemDefinitionPtr = std::shared_ptr<ProblemDefinition>;
 
 /** \brief An abstract class from which other solver should inherit */
-class TreeSearch {
-   public:
+class TreeSearch
+{
+public:
     TreeSearch();
     TreeSearch(std::string name);
 
     virtual ~TreeSearch();
 
-    void setProblemDefinition(const ProblemDefinition& pdef);
+    void setProblemDefinition(const ProblemDefinition &pdef);
 
     std::vector<State> getSolution() const;
 
@@ -123,23 +127,22 @@ class TreeSearch {
     virtual bool solve() = 0;
 
     /** \brief The planning problem */
-    ProblemDefinition pdef_;  // NOTE this could be considered bad practice. Instead of public this should be protected
+    ProblemDefinition pdef_; // NOTE this could be considered bad practice. Instead of public this should be protected
 
     /** \brief Given a node, extract the path from it to the root; save the path
      * to path_ */
     void extractPath(NodePtr node);
 
-
     bool isVisited(const NodePtr &node) const;
 
     /** \brief Add a node to the solver
      *  Virtual method. Should be redefined in child solvers */
-    virtual bool addNode(const NodePtr& node) = 0;
+    virtual bool addNode(const NodePtr &node) = 0;
 
     /** \brief List of visited nodes */
     std::vector<State> visited_;
 
-   private:
+private:
     /** \brief The node of the solver */
     std::string name_{"TreeSearch"};
 
